@@ -119,3 +119,5 @@ test.describe('commitQuality crud', () => {
   });
 
 });
+
+// konec
