@@ -42,6 +42,7 @@ test.describe('commitQuality crud', () => {
       // Definování náhodných dat pro nový produkt
     const randomName = `Product ${Math.floor(Math.random() * 100) + 1}`;
     const randomPrice = String(Math.floor(Math.random() * 900) + 100); 
+    
     await expect(navbarAddProduct).toBeVisible();
     await navbarAddProduct.click();
     await expect(page).toHaveURL(`${baseUrl}/add-product`);
@@ -89,7 +90,7 @@ test.describe('commitQuality crud', () => {
     await expect(filteredProductRow.locator('//td[@data-testid="name"]')).toHaveText(editedName);
     await expect(filteredProductRow.locator('//td[@data-testid="price"]')).toHaveText(editedPrice);
     await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText('2024-06-20');
-    
+
     // #1h) Smazání tohoto produktu + ověření, že je opravdu smazaný. 
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
