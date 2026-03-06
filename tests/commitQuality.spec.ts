@@ -41,11 +41,7 @@ test.describe('commitQuality crud', () => {
     // #1c) Otevření stránky Add Product a vytvoření nového produktu. 
       // Definování náhodných dat pro nový produkt
     const randomName = `Product ${Math.floor(Math.random() * 100) + 1}`;
-    const randomPrice = String(Math.floor(Math.random() * 900) + 100);
-    const randomDaysAgo = Math.floor(Math.random() * 365) + 1;
-    const randomDate = new Date();    
-    randomDate.setDate(randomDate.getDate() - randomDaysAgo);
-    
+    const randomPrice = String(Math.floor(Math.random() * 900) + 100); 
     await expect(navbarAddProduct).toBeVisible();
     await navbarAddProduct.click();
     await expect(page).toHaveURL(`${baseUrl}/add-product`);
@@ -65,21 +61,15 @@ test.describe('commitQuality crud', () => {
     await filterButton.click();
 
     // #1e) Ověřit údaje našeho vyhledaného produktu.
-    const expectedDate = '2025-01-15';
-
     await expect(filteredProductRow.locator('//td[@data-testid="name"]')).toHaveText(randomName);
     await expect(filteredProductRow.locator('//td[@data-testid="price"]')).toHaveText(randomPrice);
-    await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText(expectedDate);
+    await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText('2025-01-15');
   
-
     // #1f) Editace nově vytvořeného produktu – změna všech jeho údajů.
       // Definování náhodných dat pro nový produkt
     const editedName = `Product ${Math.floor(Math.random() * 100) + 1}`;
     const editedPrice = String(Math.floor(Math.random() * 900) + 100);
-    const editedDaysAgo = Math.floor(Math.random() * 365) + 1;
-    const editedDate = new Date();
-    editedDate.setDate(editedDate.getDate() - editedDaysAgo);
-   
+
     await expect(editButton).toBeVisible();
     await editButton.click();
     await expect(productNameField).toBeVisible();
@@ -87,22 +77,19 @@ test.describe('commitQuality crud', () => {
     await productNameField.fill(editedName);
     await productPriceField.clear();
     await productPriceField.fill(editedPrice);
-    await productDateField.fill('');
     await productDateField.fill('2024-06-20');
     await submitButton.click();
     await expect(filterField).toBeVisible();
 
     // #1g) Po úspěšné změně ověření, že se vše změnilo dle našeho zadání.
-    const expectedEditedDate = '2024-06-20';
-
     await expect(page).toHaveURL(baseUrl);
     await expect(filterField).toBeVisible();
     await filterField.fill(editedName);
     await filterButton.click();
     await expect(filteredProductRow.locator('//td[@data-testid="name"]')).toHaveText(editedName);
     await expect(filteredProductRow.locator('//td[@data-testid="price"]')).toHaveText(editedPrice);
-    await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText(expectedEditedDate);
-  
+    await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText('2024-06-20');
+    
     // #1h) Smazání tohoto produktu + ověření, že je opravdu smazaný. 
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
