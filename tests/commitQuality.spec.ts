@@ -101,7 +101,8 @@ test.describe('commitQuality crud', () => {
     await filterField.fill(editedName);
     await filterButton.click();
     await expect(noProductsMessage).toBeVisible();
-
+    await expect(noProductsMessage).toHaveText('No products found');
+    
     // #1i) Odhlášení pomocí odkazu Logout v menu. 
     await expect(navbarLogout).toBeVisible();
     await navbarLogout.click();
