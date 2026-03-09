@@ -20,6 +20,9 @@ test.describe('commitQuality crud', () => {
     const filteredProductRow = page.locator('//tbody//tr[1]');
     const editButton = page.locator('//tbody//tr[1]//a[@data-testid="edit-button"]');
     const deleteButton = page.locator('//tbody//tr[1]//a[@data-testid="delete-button"]');
+    const initialDate = '2025-01-15';
+    const editedDate = '2024-06-20';
+    const noProductsMessage = page.locator('//p[@class="add-product-message"]');
 
     // #1a) Otevření stránky CommitQuality. 
     await page.goto(baseUrl);
@@ -62,10 +65,10 @@ test.describe('commitQuality crud', () => {
     await filterButton.click();
 
     // #1e) Ověřit údaje našeho vyhledaného produktu.
-    await expect(filteredProductRow.locator('//td[@data-testid="name"]')).toHaveText(randomName);
-    await expect(filteredProductRow.locator('//td[@data-testid="price"]')).toHaveText(randomPrice);
-    await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText('2025-01-15');
-  
+    await expect(filteredProductRow.getByTestId('name')).toHaveText(randomName);
+    await expect(filteredProductRow.getByTestId('price')).toHaveText(randomPrice);
+    await expect(filteredProductRow.getByTestId('dateStocked')).toHaveText(initialDate);
+
     // #1f) Editace nově vytvořeného produktu – změna všech jeho údajů.
       // Definování náhodných dat pro nový produkt
     const editedName = `Product ${Math.floor(Math.random() * 100) + 1}`;
@@ -89,19 +92,22 @@ test.describe('commitQuality crud', () => {
     await filterButton.click();
     await expect(filteredProductRow.locator('//td[@data-testid="name"]')).toHaveText(editedName);
     await expect(filteredProductRow.locator('//td[@data-testid="price"]')).toHaveText(editedPrice);
-    await expect(filteredProductRow.locator('//td[@data-testid="dateStocked"]')).toHaveText('2024-06-20');
+    await expect(filteredProductRow.getByTestId('dateStocked')).toHaveText(editedDate);
 
     // #1h) Smazání tohoto produktu + ověření, že je opravdu smazaný. 
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
-    await expect(filteredProductRow).not.toBeVisible();
+    await expect(page.locator(`//tbody//td[@data-testid="name"][text()="${editedName}"]`)).not.toBeVisible();
+    await filterField.fill(editedName);
+    await filterButton.click();
+    await expect(noProductsMessage).toBeVisible();
 
     // #1i) Odhlášení pomocí odkazu Logout v menu. 
     await expect(navbarLogout).toBeVisible();
     await navbarLogout.click();
 
     // #1j) Ověření, že je uživatel odhlášený. 
-    await expect(navbarLogout).not.toBeVisible();
+    await expect(navbarLogout).toBeHidden();
     await expect(navbarLogin).toBeVisible();
 
   });
