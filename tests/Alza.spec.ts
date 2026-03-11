@@ -2,59 +2,199 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Alza', () => {
 
-    test('Alza nákup', async ({ page }) => {
+  test('Alza nákup', async ({ page }) => {
+    const parsePrice = (price: string): number => {
+    return parseInt(price.replace(/\D/g, ''));
+    };
+
+    const baseUrl = 'https://www.alza.cz/';
+    const cookiesRejectButton = page.locator('a.js-cookies-info-reject');
+    const header = page.locator('//div[@data-testid="component-header"]');
+    const searchInput = page.locator('input[data-testid="searchInput"]');
+    const searchButton = page.locator('button[data-testid="button-search"]');
+    const inStockFilter = page.locator('[data-testid="alza-branches"] label');
+    const sortBySales = page.locator('a[data-sort-name="Sales"]');
+    let itemsAdded = 0;
+    const firstProduct = page.locator('#boxes .js-box').first();
+    const firstProductLink = firstProduct.locator('a.name.browsinglink');
+    const productTitle = page.locator('h1.h1-placeholder');
+    const productPrice = page.locator('[data-testid="price-primary"] span.price-box__primary-price__value');
+    const productCode = page.locator('[data-testid="more-info-product-code"] [data-testid="value"]');
+    const buyButton = page.locator('[data-testid="component-buyButton"] button');
+    const cartModal = page.locator('[role="dialog"]');
+    const continueShoppingButton = page.getByText('Pokračovat v nákupu');
+    const secondProduct = page.locator('#boxes .js-box').nth(1);
+    const secondProductLink = secondProduct.locator('a.name.browsinglink');
+    const thirdProduct = page.locator('#boxes .js-box').nth(2);
+    const thirdProductLink = thirdProduct.locator('a.name.browsinglink');
+    const cartItemCount = page.locator('[data-testid="headerBasketIcon"] span');
+    const cartIcon = page.locator('[data-testid="headerBasketIcon"]');
+
 
     // #1a) Otevření stránky Alza.cz
-        // Odmítnutí cookies okna
-        // Ověření, že se stránka načetla
+    await page.goto(baseUrl);
+    // Odmítnutí cookies okna
+    await expect(cookiesRejectButton).toBeVisible();
+    await cookiesRejectButton.click();
+    await expect(cookiesRejectButton).toBeHidden();
+    // Ověření, že se stránka načetla
+    await expect(header).toBeVisible();
+    await expect(page).toHaveURL(baseUrl);
 
 
     // #1b) Vyhledání produktu "notebook"
-        // Filtrování výsledků – pouze produkty skladem
-        // Seřazení výsledků dle nejprodávanějších 
+    await expect(searchInput).toBeVisible();
+    await searchInput.fill('notebook');
+    await searchInput.press('Enter');
+    await expect(page).toHaveURL(/notebook/);
+    //await searchButton.click();
+    // Filtrování výsledků – pouze produkty skladem
+    await expect(inStockFilter).toBeVisible();
+    const isCheckedNotebook = await inStockFilter.locator('input').isChecked();
+    if (!isCheckedNotebook) {
+      await inStockFilter.click();
+    }
+    //await inStockFilter.click();
+    // Seřazení výsledků dle nejprodávanějších 
+    await expect(sortBySales).toBeVisible();
+    await sortBySales.click();
+    await expect(page).toHaveURL(/nejprodavanejsi-nejlepsi-notebooky/);
 
 
     // #1c) Otevření 1. produktu v seznamu
-        // Uložení názvu, ceny a kódu produktu
+    await expect(firstProductLink).toBeVisible();
+    await firstProductLink.click();
+    // Uložení proměnné názvu, ceny a kódu produktu
+    const notebookName = (await productTitle.textContent()) || '';
+    const notebookPrice = parsePrice((await productPrice.textContent()) || '');
+    const notebookCode = (await productCode.textContent()) || '';
 
 
     // #1d) Přidání produktu do košíku
-        // Zavření modálního okna a pokračování v nákupu
+    await expect(buyButton).toBeVisible();
+    await buyButton.scrollIntoViewIfNeeded(); // kliknutí na tlačítko házelo časté chyby
+    await buyButton.click();
+    itemsAdded++;
+    await expect(cartModal).toBeVisible();
+    await expect(cartModal).toContainText('Zboží přidáno do košíku');
+    // Zavření modálního okna a pokračování v nákupu
+    await expect(continueShoppingButton).toBeVisible();
+    await continueShoppingButton.click();
+    await expect(cartModal).toBeHidden();
 
 
     // #1e) Vyhledání produktu "bezdrátová myš"
-        // Filtrování výsledků - pouze produkty skladem
-        // Seřazení výsledků dle nejprodávanějších
+    await expect(searchInput).toBeVisible();
+    await searchInput.fill('bezdrátová myš');
+    await searchButton.click();
+    // Filtrování výsledků - pouze produkty skladem
+    await expect(inStockFilter).toBeVisible();
+    const isCheckedMouseFilter = await inStockFilter.locator('input').isChecked();
+    if (!isCheckedMouseFilter) {
+      await inStockFilter.click();
+    }
+    //await inStockFilter.click();
+    // Seřazení výsledků dle nejprodávanějších
+    await expect(sortBySales).toBeVisible();
+    await sortBySales.click();
+    await expect(page).toHaveURL(/nejprodavanejsi-nejlepsi-bezdratove-mysi/);
 
 
     // #1f) Otevření 2. produktu v seznamu
-        // Uložení názvu, ceny a kódu produktu
+    await expect(secondProductLink).toBeVisible();
+    await secondProductLink.click();
+    // Uložení proměnnénázvu, ceny a kódu produktu
+    const mouseName = (await productTitle.textContent()) || '';
+    const mousePrice = parsePrice((await productPrice.textContent()) || '');
+    const mouseCode = (await productCode.textContent()) || '';
 
 
     // #1g) Přidání produktu do košíku
-        // Zavření modálního okna a pokračování v nákupu
+    await expect(buyButton).toBeVisible();
+    await buyButton.scrollIntoViewIfNeeded();
+    await buyButton.click();
+    itemsAdded++;
+    await expect(cartModal).toBeVisible();
+    await expect(cartModal).toContainText('Zboží přidáno do košíku');
+    // Zavření modálního okna a pokračování v nákupu
+    await expect(continueShoppingButton).toBeVisible();
+    await continueShoppingButton.click();
+    await expect(cartModal).toBeHidden();
 
 
     // #1h) Vyhledání produktu "monitor"
-        // Filtrování výsledků - pouze produkty skladem
-        // Seřazení výsledků dle nejprodávanějších
+    await expect(searchInput).toBeVisible();
+    await searchInput.fill('monitor');
+    await searchButton.click();
+    // Filtrování výsledků - pouze produkty skladem
+    await expect(inStockFilter).toBeVisible();
+    const isCheckedMonitorFilter = await inStockFilter.locator('input').isChecked();
+    if (!isCheckedMonitorFilter) {
+      await inStockFilter.click();
+    }
+    //await inStockFilter.click();
+    // Seřazení výsledků dle nejprodávanějších
+    await expect(sortBySales).toBeVisible();
+    await sortBySales.click();
+    await expect(page).toHaveURL(/nejprodavanejsi-nejlepsi-lcd-monitory/);
 
 
     // #1i) Otevření 3. produktu v seznamu
-        // Uložení názvu, ceny a kódu produktu
+    await expect(thirdProductLink).toBeVisible();
+    await thirdProductLink.click();
+    // Uložení proměnné názvu, ceny a kódu produktu
+    const monitorName = (await productTitle.textContent()) || '';
+    const monitorPrice = parsePrice((await productPrice.textContent()) || '');
+    const monitorCode = (await productCode.textContent()) || '';
 
 
     // #1j) Přidání produktu do košíku
-        // Zavření modálního okna a pokračování v nákupu
+    await expect(buyButton).toBeVisible();
+    await buyButton.scrollIntoViewIfNeeded();
+    await buyButton.click();
+    itemsAdded++;
+    await expect(cartModal).toBeVisible();
+    await expect(cartModal).toContainText('Zboží přidáno do košíku');
+    // Zavření modálního okna a pokračování v nákupu
+    await expect(continueShoppingButton).toBeVisible();
+    await continueShoppingButton.click();
+    await expect(cartModal).toBeHidden();
 
 
-    // #1k) Otevření nákupního košíku
-        // Ověření, že se v košíku nachází všechny 3 produkty s jejich správnými názvy, cenami a kódy.
-
-    
-    // #1l) Ověření, že celková cena košíku odpovídá součtu uložených cen produktů.
+    // #1k) Ověření správného počtu přidaných položek u ikony košíku
+    await expect(cartItemCount).toHaveText(String(itemsAdded));
 
 
-    });   
+    // #1l) Otevření nákupního košíku
+    await expect(cartIcon).toBeVisible();
+    await cartIcon.click();
+    // Ověření, že se v košíku nachází všechny 3 produkty s jejich správnými názvy, cenami a kódy.
+    const notebookRow = page.locator(`div.tr[data-code="${notebookCode}"]`);
+    const mouseRow = page.locator(`div.tr[data-code="${mouseCode}"]`);
+    const monitorRow = page.locator(`div.tr[data-code="${monitorCode}"]`);
+
+    await expect(notebookRow.locator('a.mainItem')).toContainText(notebookName);
+    await expect(notebookRow.locator('span.c1x')).toContainText(notebookCode);
+    const cartNotebookPrice = parsePrice((await notebookRow.locator('div.c5').textContent()) || '');
+    expect(cartNotebookPrice).toBe(notebookPrice);
+
+    await expect(mouseRow.locator('a.mainItem')).toContainText(mouseName);
+    await expect(mouseRow.locator('span.c1x')).toContainText(mouseCode);
+    const cartMousePrice = parsePrice((await mouseRow.locator('div.c5').textContent()) || '');
+    expect(cartMousePrice).toBe(mousePrice);
+
+    await expect(monitorRow.locator('a.mainItem')).toContainText(monitorName);
+    await expect(monitorRow.locator('span.c1x')).toContainText(monitorCode);
+    const cartMonitorPrice = parsePrice((await monitorRow.locator('div.c5').textContent()) || '');
+    expect(cartMonitorPrice).toBe(monitorPrice);
+
+
+    // #1m) Ověření, že celková cena košíku odpovídá součtu uložených cen produktů.
+    const totalPriceElement = page.locator('span.last.price');
+    const cartTotalPrice = parsePrice((await totalPriceElement.textContent()) || '');
+    const expectedTotalPrice = notebookPrice + mousePrice + monitorPrice;
+    expect(cartTotalPrice).toBe(expectedTotalPrice);
+
+  });
 
 });
