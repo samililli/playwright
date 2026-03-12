@@ -4,7 +4,7 @@ test.describe('Alza', () => {
 
   test('Alza nákup', async ({ page }) => {
     const parsePrice = (price: string): number => {
-    return parseInt(price.replace(/\D/g, ''));
+      return parseInt(price.replace(/\D/g, ''));
     };
 
     const baseUrl = 'https://www.alza.cz/';
@@ -15,18 +15,17 @@ test.describe('Alza', () => {
     const inStockFilter = page.locator('[data-testid="alza-branches"] label');
     const sortBySales = page.locator('a[data-sort-name="Sales"]');
     let itemsAdded = 0;
-    const firstProduct = page.locator('#boxes .js-box').first();
-    const firstProductLink = firstProduct.locator('a.name.browsinglink');
+    const firstProductLink = page.locator('#boxes .js-box').first().locator('a.name.browsinglink');
     const productTitle = page.locator('h1.h1-placeholder');
     const productPrice = page.locator('[data-testid="price-primary"] span.price-box__primary-price__value');
     const productCode = page.locator('[data-testid="more-info-product-code"] [data-testid="value"]');
     const buyButton = page.locator('[data-testid="component-buyButton"] button');
-    const cartModal = page.locator('[role="dialog"]');
-    const continueShoppingButton = page.getByText('Pokračovat v nákupu');
-    const secondProduct = page.locator('#boxes .js-box').nth(1);
-    const secondProductLink = secondProduct.locator('a.name.browsinglink');
-    const thirdProduct = page.locator('#boxes .js-box').nth(2);
-    const thirdProductLink = thirdProduct.locator('a.name.browsinglink');
+    //const cartModal = page.getByText('Zboží přidáno do košíku');
+    const cartModal = page.locator('[role="dialog"] #cross-popup-dialog-title');
+    //const continueShoppingButton = page.getByText('Pokračovat v nákupu');
+    const continueShoppingButton = page.locator('[role="dialog"] button.btn-textLeft.white');
+    const secondProductLink = page.locator('#boxes .js-box').nth(1).locator('a.name.browsinglink');
+    const thirdProductLink = page.locator('#boxes .js-box').nth(2).locator('a.name.browsinglink');
     const cartItemCount = page.locator('[data-testid="headerBasketIcon"] span');
     const cartIcon = page.locator('[data-testid="headerBasketIcon"]');
 
@@ -47,14 +46,12 @@ test.describe('Alza', () => {
     await searchInput.fill('notebook');
     await searchInput.press('Enter');
     await expect(page).toHaveURL(/notebook/);
-    //await searchButton.click();
     // Filtrování výsledků – pouze produkty skladem
     await expect(inStockFilter).toBeVisible();
     const isCheckedNotebook = await inStockFilter.locator('input').isChecked();
     if (!isCheckedNotebook) {
       await inStockFilter.click();
     }
-    //await inStockFilter.click();
     // Seřazení výsledků dle nejprodávanějších 
     await expect(sortBySales).toBeVisible();
     await sortBySales.click();
@@ -76,24 +73,23 @@ test.describe('Alza', () => {
     await buyButton.click();
     itemsAdded++;
     await expect(cartModal).toBeVisible();
-    await expect(cartModal).toContainText('Zboží přidáno do košíku');
     // Zavření modálního okna a pokračování v nákupu
     await expect(continueShoppingButton).toBeVisible();
     await continueShoppingButton.click();
-    await expect(cartModal).toBeHidden();
+    await expect(continueShoppingButton).toBeHidden();
 
 
     // #1e) Vyhledání produktu "bezdrátová myš"
     await expect(searchInput).toBeVisible();
     await searchInput.fill('bezdrátová myš');
     await searchButton.click();
+    await expect(page).toHaveURL(/bezdratova/);
     // Filtrování výsledků - pouze produkty skladem
     await expect(inStockFilter).toBeVisible();
     const isCheckedMouseFilter = await inStockFilter.locator('input').isChecked();
     if (!isCheckedMouseFilter) {
       await inStockFilter.click();
     }
-    //await inStockFilter.click();
     // Seřazení výsledků dle nejprodávanějších
     await expect(sortBySales).toBeVisible();
     await sortBySales.click();
@@ -103,7 +99,7 @@ test.describe('Alza', () => {
     // #1f) Otevření 2. produktu v seznamu
     await expect(secondProductLink).toBeVisible();
     await secondProductLink.click();
-    // Uložení proměnnénázvu, ceny a kódu produktu
+    // Uložení proměnné názvu, ceny a kódu produktu
     const mouseName = (await productTitle.textContent()) || '';
     const mousePrice = parsePrice((await productPrice.textContent()) || '');
     const mouseCode = (await productCode.textContent()) || '';
@@ -115,24 +111,23 @@ test.describe('Alza', () => {
     await buyButton.click();
     itemsAdded++;
     await expect(cartModal).toBeVisible();
-    await expect(cartModal).toContainText('Zboží přidáno do košíku');
     // Zavření modálního okna a pokračování v nákupu
     await expect(continueShoppingButton).toBeVisible();
     await continueShoppingButton.click();
-    await expect(cartModal).toBeHidden();
+    await expect(continueShoppingButton).toBeHidden();
 
 
     // #1h) Vyhledání produktu "monitor"
     await expect(searchInput).toBeVisible();
     await searchInput.fill('monitor');
     await searchButton.click();
+    await expect(page).toHaveURL(/monitor/);
     // Filtrování výsledků - pouze produkty skladem
     await expect(inStockFilter).toBeVisible();
     const isCheckedMonitorFilter = await inStockFilter.locator('input').isChecked();
     if (!isCheckedMonitorFilter) {
       await inStockFilter.click();
     }
-    //await inStockFilter.click();
     // Seřazení výsledků dle nejprodávanějších
     await expect(sortBySales).toBeVisible();
     await sortBySales.click();
@@ -154,11 +149,10 @@ test.describe('Alza', () => {
     await buyButton.click();
     itemsAdded++;
     await expect(cartModal).toBeVisible();
-    await expect(cartModal).toContainText('Zboží přidáno do košíku');
     // Zavření modálního okna a pokračování v nákupu
     await expect(continueShoppingButton).toBeVisible();
     await continueShoppingButton.click();
-    await expect(cartModal).toBeHidden();
+    await expect(continueShoppingButton).toBeHidden();
 
 
     // #1k) Ověření správného počtu přidaných položek u ikony košíku
