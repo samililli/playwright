@@ -30,7 +30,7 @@ test.describe('Alza', () => {
     const sortBySales = page.locator('a[data-sort-name="Sales"]');
     const firstProductLink = page.locator('#boxes .js-box').first().locator('a.name.browsinglink');
     const productTitle = page.locator('h1.h1-placeholder');
-    const productPrice = page.locator('[data-testid="price-primary"] span.price-box__primary-price__value');
+    const productPrice = page.locator('[data-testid="price-primary"] span.ads-pb__price-value');
     const productCode = page.locator('[data-testid="more-info-product-code"] [data-testid="value"]');
     const buyButton = page.locator('[data-testid="component-buyButton"] button');
     const cartDialog = page.locator('[role="dialog"]');
@@ -380,7 +380,7 @@ test.describe('Alza', () => {
     const sortBySales = page.locator('a[data-sort-name="Sales"]');
     const firstProductLink = page.locator('#boxes .js-box').first().locator('a.name.browsinglink');
     const productTitle = page.locator('h1.h1-placeholder');
-    const productPrice = page.locator('[data-testid="price-primary"] span.price-box__primary-price__value');
+    const productPrice = page.locator('[data-testid="price-primary"] span.ads-pb__price-value');
     const productCode = page.locator('[data-testid="more-info-product-code"] [data-testid="value"]');
     const buyButton = page.locator('[data-testid="component-buyButton"] button');
     const cartDialog = page.locator('[role="dialog"]');
