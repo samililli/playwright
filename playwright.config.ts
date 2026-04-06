@@ -27,7 +27,7 @@ export default defineConfig({
 // timeout: 60000,
 use: {
     launchOptions: {
-        slowMo: 500,
+        slowMo: 500, /**pomalejsi klikani testu */
     },
     trace: 'on-first-retry',
 },
