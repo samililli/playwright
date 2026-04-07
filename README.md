@@ -64,7 +64,7 @@ Refaktorovaná verze hlavního nákupního scénáře s využitím **Page Object
 
 ```
 ├── tests/
-│   ├── sauceDemo1_spec.ts        # SauceDemo (XPath + CSS varianty)
+│   ├── sauceDemo.spec.ts        # SauceDemo (XPath + CSS varianty)
 │   ├── commitQuality_spec.ts     # CommitQuality CRUD
 │   ├── Alza_spec.ts              # Alza (bez POM)
 │   └── Alza_POM_spec.ts          # Alza (s POM)
