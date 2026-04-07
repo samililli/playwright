@@ -17,7 +17,7 @@ export class AlzaProductPage {
   constructor(page: Page) {
     this.page = page;
     this.title = page.locator('h1.h1-placeholder');
-    this.price = page.locator('[data-testid="price-primary"] span.price-box__primary-price__value');
+    this.price = page.locator('[data-testid="price-primary"] span.ads-pb__price-value');
     this.code = page.locator('[data-testid="more-info-product-code"] [data-testid="value"]');
     this.buyButton = page.locator('[data-testid="component-buyButton"] button');
   }

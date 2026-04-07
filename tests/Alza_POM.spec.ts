@@ -5,7 +5,7 @@ import { AlzaProductPage, type ProductInfo } from '../pages/AlzaProductPage';
 import { AlzaCartModal } from '../pages/AlzaCartModal';
 import { AlzaCartPage } from '../pages/AlzaCartPage';
 
-test.describe('Alza', () => {
+test.describe('Alza POM cvičení', () => {
   test.describe.configure({ timeout: 60000 });
   const baseUrl = 'https://www.alza.cz/';
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('commitQuality crud', () => {
+test.describe('commitQuality CRUD operations', () => {
 
   test('commitQuality flow', async ({ page }) => {
     const baseUrl = 'https://commitquality.com';
@@ -24,7 +24,7 @@ test.describe('commitQuality crud', () => {
     const editedDate = '2024-06-20';
     const noProductsMessage = page.locator('//p[@class="add-product-message"]');
 
-    // #1a) Otevření stránky CommitQuality. 
+    // #1a) Otevření stránky CommitQuality.
     await page.goto(baseUrl);
     await expect(navbarProducts).toBeVisible();
     await expect(page).toHaveURL(baseUrl);
@@ -41,11 +41,11 @@ test.describe('commitQuality crud', () => {
     await expect(navbarLogin).not.toBeVisible();
     await expect(navbarLogout).toBeVisible();
 
-    // #1c) Otevření stránky Add Product a vytvoření nového produktu. 
+    // #1c) Otevření stránky Add Product a vytvoření nového produktu.
       // Definování náhodných dat pro nový produkt
     const randomName = `Product ${Math.floor(Math.random() * 100) + 1}`;
-    const randomPrice = String(Math.floor(Math.random() * 900) + 100); 
-    
+    const randomPrice = String(Math.floor(Math.random() * 900) + 100);
+
     await expect(navbarAddProduct).toBeVisible();
     await navbarAddProduct.click();
     await expect(page).toHaveURL(`${baseUrl}/add-product`);
@@ -94,7 +94,7 @@ test.describe('commitQuality crud', () => {
     await expect(filteredProductRow.locator('//td[@data-testid="price"]')).toHaveText(editedPrice);
     await expect(filteredProductRow.getByTestId('dateStocked')).toHaveText(editedDate);
 
-    // #1h) Smazání tohoto produktu + ověření, že je opravdu smazaný. 
+    // #1h) Smazání tohoto produktu + ověření, že je opravdu smazaný.
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
     await expect(page.locator(`//tbody//td[@data-testid="name"][text()="${editedName}"]`)).not.toBeVisible();
@@ -102,12 +102,12 @@ test.describe('commitQuality crud', () => {
     await filterButton.click();
     await expect(noProductsMessage).toBeVisible();
     await expect(noProductsMessage).toHaveText('No products found');
-    
-    // #1i) Odhlášení pomocí odkazu Logout v menu. 
+
+    // #1i) Odhlášení pomocí odkazu Logout v menu.
     await expect(navbarLogout).toBeVisible();
     await navbarLogout.click();
 
-    // #1j) Ověření, že je uživatel odhlášený. 
+    // #1j) Ověření, že je uživatel odhlášený.
     await expect(navbarLogout).toBeHidden();
     await expect(navbarLogin).toBeVisible();
 

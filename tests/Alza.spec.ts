@@ -19,7 +19,7 @@ test.describe('Alza', () => {
     await expect(cookiesRejectButton).toBeHidden();
   });
 
-  test('Nákup - happy scénář', async ({ page }) => {
+  test('Nákup - happy flow', async ({ page }) => {
 
     let itemsAdded = 0;
 
