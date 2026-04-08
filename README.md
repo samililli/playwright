@@ -89,7 +89,7 @@ npm install
 npx playwright test --project=chromium
 
 # spuštění konkrétního testu
-npx playwright test tests/sauceDemo1_spec.ts --project=chromium
+npx playwright test tests/Alza.spec.ts --project=chromium
 
 # spuštění s vizuálním prohlížečem (headed)
 npx playwright test --project=chromium --headed
